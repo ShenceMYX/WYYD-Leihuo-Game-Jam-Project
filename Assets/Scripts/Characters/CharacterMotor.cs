@@ -7,8 +7,8 @@ namespace ns
 	/// <summary>
 	///
 	/// </summary>
-	public class PlayerInputController : MonoBehaviour
+	public class CharacterMotor : MonoBehaviour
 	{
-    
+		[SerializeField] protected float moveSpeed = 1;
 	}
 }
