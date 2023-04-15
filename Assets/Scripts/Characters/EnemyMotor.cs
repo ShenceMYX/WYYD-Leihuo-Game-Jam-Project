@@ -12,7 +12,7 @@ namespace ns
 	{
 		private NavMeshAgent agent;
 
-        private void Start()
+        private void Awake()
         {
 			agent = GetComponent<NavMeshAgent>();
 			agent.speed = moveSpeed;

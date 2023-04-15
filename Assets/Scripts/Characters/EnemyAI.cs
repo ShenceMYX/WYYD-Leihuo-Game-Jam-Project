@@ -13,7 +13,8 @@ namespace ns
         enum EnemyState
         {
             patrol,
-            chase
+            chase,
+            idle
         }
 
 		private EnemyMotor motor;
@@ -27,11 +28,22 @@ namespace ns
         private float startWaitTime;
         private bool isWaiting = false;
 
+        private Transform chaseTarget;
+
+        private float currentStealValue = 50;
+        private float stealSpeed = 25;
+        private float maxStealValue = 100;
+        private MeshRenderer meshRenderer;
+        private bool startStealing = false;
+
         private void Start()
         {
 			motor = GetComponent<EnemyMotor>();
+            meshRenderer = GetComponentInChildren<MeshRenderer>();
+            //wayPoints = GetComponentInChildren<WayLine>().WayPoints;
+            motor.MoveToTarget(wayPoints[targetWayPointIndex].position);
         }
-
+        
         private void Update()
         {
             switch (currentState)
@@ -42,18 +54,45 @@ namespace ns
                 case EnemyState.chase:
                     Chase();
                     break;
+                case EnemyState.idle:
+                    Idle();
+                    break;
             }
+
+            if (startStealing)
+            {
+                currentState = EnemyState.idle;
+                currentStealValue += stealSpeed * Time.deltaTime;
+                float stealRatio = currentStealValue / maxStealValue;
+                meshRenderer.material.SetFloat("_GradientIntensity", stealRatio);
+                if(stealRatio >= 1)
+                {
+                    startStealing = false;
+                    chaseTarget = PlayerInputController.Instance.transform;
+                    Invoke("StartChasing", 1);
+                }
+            }
+        }
+
+        private void StartChasing()
+        {
+            currentState = EnemyState.chase;
+        }
+
+        private void Idle()
+        {
+            motor.MoveToTarget(transform.position);
         }
 
         private void Chase()
         {
-            throw new NotImplementedException();
+            motor.MoveToTarget(chaseTarget.position);
         }
 
         private void Patrol()
         {
             //Debug.Log(Vector3.Distance(transform.position, wayPoints[targetWayPointIndex].position));
-            if (Vector3.Distance(transform.position, wayPoints[targetWayPointIndex].position) < 0.5f)
+            if (Vector3.Distance(transform.position, wayPoints[targetWayPointIndex].position) < 1f)
             {
                 if (!isWaiting)
                 {
@@ -72,6 +111,24 @@ namespace ns
                     }
                 }
 
+            }
+        }
+
+        private void OnTriggerStay(Collider other)
+        {
+            if (other.CompareTag("Player"))
+            {
+                if (Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.RightShift))
+                {
+                    //target = other.transform;
+                    //currentState = EnemyState.chase;
+                    startStealing = true;
+                }
+
+                if (Input.GetKeyUp(KeyCode.LeftShift) || Input.GetKeyUp(KeyCode.RightShift))
+                {
+                    startStealing = false;
+                }
             }
         }
     }
