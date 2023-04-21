@@ -67,6 +67,7 @@ namespace ns
                 meshRenderer.material.SetFloat("_GradientIntensity", stealRatio);
                 if(stealRatio >= 1)
                 {
+                    PlayerInputController.Instance.GrowBody();
                     startStealing = false;
                     chaseTarget = PlayerInputController.Instance.transform;
                     Invoke("StartChasing", 1);
@@ -91,7 +92,6 @@ namespace ns
 
         private void Patrol()
         {
-            //Debug.Log(Vector3.Distance(transform.position, wayPoints[targetWayPointIndex].position));
             if (Vector3.Distance(transform.position, wayPoints[targetWayPointIndex].position) < 1f)
             {
                 if (!isWaiting)
@@ -110,7 +110,10 @@ namespace ns
                         isWaiting = false;
                     }
                 }
-
+            }
+            else
+            {
+                motor.MoveToTarget(wayPoints[targetWayPointIndex].position);
             }
         }
 
@@ -129,6 +132,15 @@ namespace ns
                 {
                     startStealing = false;
                 }
+            }
+        }
+
+        private void OnCollisionEnter(Collision collision)
+        {
+            if (collision.collider.CompareTag("Player") && currentState == EnemyState.chase)
+            {
+                PlayerInputController.Instance.ReduceBody();
+                currentState = EnemyState.patrol;
             }
         }
     }

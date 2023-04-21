@@ -9,9 +9,10 @@ namespace ns
 	/// </summary>
 	public class GroundChecker : MonoBehaviour
 	{
-        public bool OnGround { get; private set; }
+        public bool OnGround;//{ get; private set; }
 
-        private Vector2 _normal;
+        private Vector3 _normal;
+
 
         private void OnCollisionExit(Collision collision)
         {
@@ -35,7 +36,7 @@ namespace ns
                 _normal = collision.GetContact(i).normal;
                 OnGround |= _normal.y >= 0.9f;
             }
+
         }
-        
     }
 }

@@ -19,9 +19,13 @@ namespace ns
 
 		private Vector3 initialVelocity;
 
+		[SerializeField] private float acceleratedRate = 3;
+		private float initialSpeed;
+
 		private void Start()
 		{
 			rb = GetComponent<Rigidbody>();
+			initialSpeed = moveSpeed;
 		}
 
         private void FixedUpdate()
@@ -46,7 +50,7 @@ namespace ns
         {
 			Vector3 moveForwardVec = transform.forward * moveSpeed * forwardInput;
 			initialVelocity = new Vector3(moveForwardVec.x, rb.velocity.y, moveForwardVec.z);
-        }
+		}
 
 		public void RotateToTarget(Vector3 target)
         {
@@ -61,12 +65,22 @@ namespace ns
 
 		public void Jump()
         {
-			initialVelocity += new Vector3(0, jumpSpeed, 0);
+			initialVelocity = new Vector3(0, jumpSpeed, 0);
 		}
 
 		public void SetVelocity()
         {
 			rb.velocity = initialVelocity;
+		}
+
+        public void ResetSpeed()
+        {
+			moveSpeed = initialSpeed;
         }
-	}
+
+		public void SetSpeedToAcceleratedSpeed()
+        {
+			moveSpeed = initialSpeed * acceleratedRate;
+        }
+    }
 }

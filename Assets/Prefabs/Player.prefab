@@ -45,7 +45,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6073607561801050277}
   serializedVersion: 2
-  m_Mass: 1
+  m_Mass: 100
   m_Drag: 0
   m_AngularDrag: 0.05
   m_UseGravity: 1
@@ -65,6 +65,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e11d89ad3f3ee4bcab19f6798926ddf4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  jumpRequiredEnergy: 0
+  playerPhysicMat: {fileID: 13400000, guid: aef1688c6d9ad4fac9606a1e2fb08cfb, type: 2}
 --- !u!114 &2952393199599095786
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -78,10 +80,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 5
-  jumpSpeed: 9
+  jumpSpeed: 9.5
   turnSpeed: 720
-  moveUpGravity: {x: 0, y: -17, z: 0}
-  moveDownGravity: {x: 0, y: -35, z: 0}
+  moveUpGravity: {x: 0, y: -18, z: 0}
+  moveDownGravity: {x: 0, y: -40, z: 0}
+  acceleratedRate: 2
 --- !u!65 &8492776951214358826
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -89,7 +92,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6073607561801050277}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: aef1688c6d9ad4fac9606a1e2fb08cfb, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -107,6 +110,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a63c82495b9247108f9e8b95f778997, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  OnGround: 0
 --- !u!1 &6949965802642744248
 GameObject:
   m_ObjectHideFlags: 0
@@ -119,7 +123,7 @@ GameObject:
   - component: {fileID: 3046484768512934098}
   - component: {fileID: 9112470200350955750}
   m_Layer: 3
-  m_Name: Cube
+  m_Name: Cube 0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
