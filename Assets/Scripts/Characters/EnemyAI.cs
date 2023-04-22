@@ -93,7 +93,7 @@ namespace ns
             }
 
             withinTriggerRange = Convert.ToBoolean(Physics.OverlapSphereNonAlloc(transform.position, soulStolenRange, playerCollider, playerLayer));
-            
+
         }
 
         private void WaitForChase()
@@ -189,14 +189,19 @@ namespace ns
         {
             if (other.CompareTag("Player") && currentState == EnemyState.chase)
             {
+                //追普通的灵魂
                 if (chasingCombinedSoul == null)
+                {
+                    chaseTarget = null;
                     PlayerInputController.Instance.ReduceBody(enemySoul);
+                    TurnToOriginalColor();
+                }
+                //追三合一的灵魂
                 else
                     PlayerInputController.Instance.SplitCombinedSoul(chasingCombinedSoul);
 
-                chaseTarget = null;
+                
                 HealthManager.Instance.DecreaseHealth();
-                TurnToOriginalColor();
             }
         }
 

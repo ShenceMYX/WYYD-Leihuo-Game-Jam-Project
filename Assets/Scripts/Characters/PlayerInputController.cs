@@ -143,6 +143,8 @@ namespace ns
         [Button]
         public void GrowBody(Soul enemySoul)
         {
+            GameManager.Instance.UpdateCurrentSoul(1);
+
             //if (currentBodypartIndex >= 9) return;
             GameObject prefabToBeSpawned = null;
             switch (enemySoul.soulColor)
@@ -173,12 +175,15 @@ namespace ns
             soulGO.transform.localPosition = new Vector3(0, 0, 0);
             soulGO.transform.localScale = Vector3.one * 0.5f;
 
+
             if (CheckCombineSoul())
                 CombineSouls();
         }
 
         public void ReduceBody(Soul enemySoul)
         {
+            GameManager.Instance.UpdateCurrentSoul(-1);
+
             GameObject soulToBeRemoved = enemySoul.soulGO;
             soulDIC[enemySoul.soulColor].Remove(enemySoul);
 
@@ -194,6 +199,8 @@ namespace ns
 
         public void SplitCombinedSoul(CombinedSoul combinedSoul)
         {
+            GameManager.Instance.UpdateCurrentSoul(-1);
+
             Soul redSoul = combinedSoul.redSoul;
             Soul blueSoul = combinedSoul.blueSoul;
             Soul yellowSoul = combinedSoul.yellowSoul;

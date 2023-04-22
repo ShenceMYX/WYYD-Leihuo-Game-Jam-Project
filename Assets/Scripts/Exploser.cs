@@ -16,9 +16,12 @@ namespace ns
 
         private void OnCollisionEnter(Collision collision)
         {
-            Destroy(gameObject.GetComponent<Rigidbody>());
-            GetComponent<BoxCollider>().isTrigger = true;
-            Destroy(this);
+            if (collision.collider.CompareTag("Ground"))
+            {
+                Destroy(gameObject.GetComponent<Rigidbody>());
+                GetComponent<BoxCollider>().isTrigger = true;
+                Destroy(this);
+            }
         }
     }
 }

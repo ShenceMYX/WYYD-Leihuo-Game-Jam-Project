@@ -208,7 +208,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemySoulColor: 2
-  soulPrefab: {fileID: 0}
   currentState: 0
   wayPoints:
   - {fileID: 534806267}
@@ -268,7 +267,7 @@ BoxCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Center: {x: 0, y: 0.5, z: 0}
 --- !u!1 &6628926819260576486
 GameObject:
   m_ObjectHideFlags: 0

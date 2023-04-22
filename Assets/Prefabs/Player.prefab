@@ -903,6 +903,7 @@ GameObject:
   - component: {fileID: 2952393199599095786}
   - component: {fileID: 8492776951214358826}
   - component: {fileID: 8492776951214358830}
+  - component: {fileID: 1031910710}
   m_Layer: 3
   m_Name: Player
   m_TagString: Player
@@ -1007,6 +1008,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   OnGround: 0
+--- !u!114 &1031910710
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6073607561801050277}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e96d75502ce9471597b239fd80056c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  randomRadius: 2
+  minExplodeRange: 10
+  maxExplodeRange: 15
+  minExplosionForce: 800
+  maxExplosionForce: 1500
+  minExplosionY: 1
+  maxExplosionY: 2
 --- !u!1 &6949965802642744248
 GameObject:
   m_ObjectHideFlags: 0

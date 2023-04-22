@@ -25,6 +25,7 @@ namespace ns
 			GameObject go = Instantiate(prefab, transform.position + new Vector3(randomCircle.x, Random.Range(minExplosionY, maxExplosionY), randomCircle.y), Quaternion.identity);
 			go.AddComponent<Exploser>();
 			Rigidbody rb = go.AddComponent<Rigidbody>();
+			rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic; 
 			rb.AddExplosionForce(Random.Range(minExplosionForce, maxExplosionForce), transform.position, Random.Range(minExplodeRange, maxExplodeRange));
 
 			return go;
