@@ -9,11 +9,13 @@ namespace ns
 	/// </summary>
 	public class Box : MonoBehaviour
 	{
+		public int maxCapacity = 2;
+		public int currentCapacity = 0;
+
 		private void OnTriggerStay(Collider other)
 		{
-            if (other.CompareTag("Player") && Input.GetKeyDown(KeyCode.Z))
+            if (other.CompareTag("Player") && Input.GetKeyDown(KeyCode.Q))
             {
-				PlayerInputController.Instance.ReduceBodyNotHealth();
                 
             }
 		}

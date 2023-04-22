@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 
 namespace ns
@@ -8,33 +9,60 @@ namespace ns
 	/// <summary>
 	///
 	/// </summary>
-	public class EnemyAI : MonoBehaviour
+    public enum SoulColor
+    {
+        red,
+        yellow,
+        blue,
+        purple
+    }
+
+    public class EnemyAI : MonoBehaviour
 	{
-        enum EnemyState
+        public enum EnemyState
         {
             patrol,
             chase,
-            idle
+            paralysis,
+            waitForChase
         }
+
 
 		private EnemyMotor motor;
 
+        [SerializeField] private SoulColor enemySoulColor;
+
+        private Soul enemySoul;
+        public Soul EnemySoul { get { return enemySoul; } }
         [SerializeField] private EnemyState currentState = EnemyState.patrol;
+        public EnemyState CurrentState { get { return currentState; } }
 
         [SerializeField] private Transform[] wayPoints;
         public int targetWayPointIndex;
 
-        [SerializeField] private float waitTime = 1;
+        [SerializeField] private float patrolWaitTime = 1;
         private float startWaitTime;
         private bool isWaiting = false;
 
-        private Transform chaseTarget;
+        public Transform chaseTarget;
 
-        private float currentStealValue = 50;
-        private float stealSpeed = 25;
+        private float currentStealValue = 0;
+        private float stealSpeed = 50;
         private float maxStealValue = 100;
         private MeshRenderer meshRenderer;
-        private bool startStealing = false;
+        private bool withinTriggerRange = false;
+
+        public event Action<float> OnStealValueChanged;
+        public event Action OnStealValueFull;
+
+        [SerializeField] private float paralysisRecoverTime = 2f;
+        private float paralysisTimer;
+
+        [SerializeField] private float soulStolenRange = 4;
+        [SerializeField] private LayerMask playerLayer;
+        private Collider[] playerCollider = new Collider[1];
+
+        public CombinedSoul chasingCombinedSoul;
 
         private void Start()
         {
@@ -42,6 +70,8 @@ namespace ns
             meshRenderer = GetComponentInChildren<MeshRenderer>();
             //wayPoints = GetComponentInChildren<WayLine>().WayPoints;
             motor.MoveToTarget(wayPoints[targetWayPointIndex].position);
+
+            enemySoul = new Soul(enemySoulColor, this);
         }
         
         private void Update()
@@ -54,25 +84,21 @@ namespace ns
                 case EnemyState.chase:
                     Chase();
                     break;
-                case EnemyState.idle:
-                    Idle();
+                case EnemyState.paralysis:
+                    Paralyze();
+                    break;
+                case EnemyState.waitForChase:
+                    WaitForChase();
                     break;
             }
 
-            if (startStealing)
-            {
-                currentState = EnemyState.idle;
-                currentStealValue += stealSpeed * Time.deltaTime;
-                float stealRatio = currentStealValue / maxStealValue;
-                meshRenderer.material.SetFloat("_GradientIntensity", stealRatio);
-                if(stealRatio >= 1)
-                {
-                    PlayerInputController.Instance.GrowBody();
-                    startStealing = false;
-                    chaseTarget = PlayerInputController.Instance.transform;
-                    Invoke("StartChasing", 1);
-                }
-            }
+            withinTriggerRange = Convert.ToBoolean(Physics.OverlapSphereNonAlloc(transform.position, soulStolenRange, playerCollider, playerLayer));
+            
+        }
+
+        private void WaitForChase()
+        {
+            Invoke("StartChasing", 1);
         }
 
         private void StartChasing()
@@ -80,24 +106,66 @@ namespace ns
             currentState = EnemyState.chase;
         }
 
-        private void Idle()
+        private void Paralyze()
         {
             motor.MoveToTarget(transform.position);
+
+            if ((Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) && withinTriggerRange)
+            {
+                paralysisTimer = 0;
+
+                float stealRatio = currentStealValue / maxStealValue;
+                if (stealRatio < 1)
+                {
+                    currentStealValue += stealSpeed * Time.deltaTime;
+
+                    OnStealValueChanged?.Invoke(stealRatio);
+                    meshRenderer.material.SetFloat("_GradientIntensity", 0.5f + 0.5f * stealRatio);
+                }
+                else
+                {
+                    if(currentStealValue > 0)
+                    {
+                        PlayerInputController.Instance.GrowBody(enemySoul);
+                        //chaseTarget = enemySoul.soulGO.transform; 在GrowBody中直接设置chaseTarget
+
+                        currentState = EnemyState.waitForChase;
+                        currentStealValue = 0;
+                        OnStealValueFull?.Invoke();
+                    }
+                }
+            }
+            else
+            {
+                paralysisTimer += Time.deltaTime;
+                if (paralysisTimer > paralysisRecoverTime)
+                {
+                    currentState = EnemyState.patrol;
+                }
+            }
         }
 
         private void Chase()
         {
-            motor.MoveToTarget(chaseTarget.position);
+            if (chaseTarget != null)
+                motor.MoveToTarget(chaseTarget.position);
+            else
+                currentState = EnemyState.patrol;
         }
 
         private void Patrol()
         {
+            if ((Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.RightShift)) && withinTriggerRange && (Mathf.Abs(PlayerInputController.Instance.transform.position.y - transform.position.y) < 0.5f))
+            {
+                currentState = EnemyState.paralysis;
+            }
+
             if (Vector3.Distance(transform.position, wayPoints[targetWayPointIndex].position) < 1f)
             {
                 if (!isWaiting)
                 {
                     isWaiting = true;
-                    startWaitTime = waitTime;
+                    startWaitTime = patrolWaitTime;
                 }
                 else
                 {
@@ -117,31 +185,31 @@ namespace ns
             }
         }
 
-        private void OnTriggerStay(Collider other)
+        private void OnTriggerEnter(Collider other)
         {
-            if (other.CompareTag("Player"))
+            if (other.CompareTag("Player") && currentState == EnemyState.chase)
             {
-                if (Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.RightShift))
-                {
-                    //target = other.transform;
-                    //currentState = EnemyState.chase;
-                    startStealing = true;
-                }
+                if (chasingCombinedSoul == null)
+                    PlayerInputController.Instance.ReduceBody(enemySoul);
+                else
+                    PlayerInputController.Instance.SplitCombinedSoul(chasingCombinedSoul);
 
-                if (Input.GetKeyUp(KeyCode.LeftShift) || Input.GetKeyUp(KeyCode.RightShift))
-                {
-                    startStealing = false;
-                }
+                chaseTarget = null;
+                HealthManager.Instance.DecreaseHealth();
+                TurnToOriginalColor();
             }
         }
 
-        private void OnCollisionEnter(Collision collision)
+        public void TurnToOriginalColor()
         {
-            if (collision.collider.CompareTag("Player") && currentState == EnemyState.chase)
-            {
-                PlayerInputController.Instance.ReduceBody();
-                currentState = EnemyState.patrol;
-            }
+            DOTween.To((float pNewValue) =>
+                    meshRenderer.material.SetFloat("_GradientIntensity", pNewValue)
+                    , 1, 0, 1);
+        }
+
+        private void OnDrawGizmos()
+        {
+            Gizmos.DrawWireSphere(transform.position, soulStolenRange);
         }
     }
 }

@@ -27,6 +27,7 @@ namespace ns
 
 		public void DecreaseHealth()
         {
+			if (currentHealth == 0) return;
 			Destroy(healthUIGOs[currentHealth - 1].gameObject);
 			currentHealth --;
         }

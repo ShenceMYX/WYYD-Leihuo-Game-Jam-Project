@@ -34,6 +34,6 @@ Material:
     - _YMin: 1
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _GradientColor: {r: 0, g: 0.43849897, b: 1, a: 1}
-    - _Tint: {r: 1, g: 1, b: 1, a: 1}
+    - _GradientColor: {r: 1, g: 1, b: 1, a: 1}
+    - _Tint: {r: 0, g: 0.4392157, b: 1, a: 1}
   m_BuildTextureStacks: []

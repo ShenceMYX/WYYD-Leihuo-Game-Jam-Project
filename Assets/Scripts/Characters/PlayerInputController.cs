@@ -1,8 +1,11 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Common;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace ns
 {
@@ -23,18 +26,36 @@ namespace ns
         [SerializeField] private PhysicMaterial playerPhysicMat;
         private bool lastOnGround;
 
-        public GameObject bodyPartPrefab;
+        public GameObject blueSoulPrefab;
+        public GameObject redSoulPrefab;
+        public GameObject yellowSoulPrefab;
+        public GameObject combinedPurpleSoulPrefab;
+
         public int currentBodypartIndex;
         private List<GameObject> bodyParts = new List<GameObject>();
-        public float dampSpeed = 2;
-        public float dist = 1.5f;
+        [SerializeField] private Transform[] pivotTransArr;
+        private Dictionary<SoulColor, List<Soul>> soulDIC = new Dictionary<SoulColor, List<Soul>>();
+
+        private ExplosionController explosionController;
 
         private void Start()
         {
             motor = GetComponent<PlayerMotor>();
 			groundChecker = GetComponent<GroundChecker>();
+            explosionController = GetComponent<ExplosionController>();
 
-            bodyParts.Add(transform.GetChild(0).gameObject);
+            pivotTransArr = new Transform[8];
+            pivotTransArr[0] = transform.FindChildByName("pivot1");
+            for (int i = 1; i < pivotTransArr.Length; i++)
+            {
+                pivotTransArr[i] = pivotTransArr[i - 1].GetChild(0);
+            }
+
+            soulDIC.Add(SoulColor.blue, new List<Soul>());
+            soulDIC.Add(SoulColor.red, new List<Soul>());
+            soulDIC.Add(SoulColor.yellow, new List<Soul>());
+            soulDIC.Add(SoulColor.purple, new List<Soul>());
+
             currentBodypartIndex++;
         }
 
@@ -90,30 +111,155 @@ namespace ns
             motor.SetSpeedToAcceleratedSpeed();
         }
 
+        private void CombineSouls()
+        {
+            Soul redSoul = soulDIC[SoulColor.red].Last();
+            Soul blueSoul = soulDIC[SoulColor.blue].Last();
+            Soul yellowSoul = soulDIC[SoulColor.yellow].Last();
+
+            CombinedSoul combinedSoul = new CombinedSoul(redSoul, blueSoul, yellowSoul);
+
+            ReduceBody(redSoul);
+            ReduceBody(blueSoul);
+            ReduceBody(yellowSoul);
+
+            GrowBody(combinedSoul);
+
+            //原来的分别追逐的三个不同灵魂都三个敌人现在统一都追逐一个三合一灵魂
+            redSoul.chasedEnemyAI.chaseTarget = combinedSoul.soulGO.transform;
+            redSoul.chasedEnemyAI.chasingCombinedSoul = combinedSoul;
+            blueSoul.chasedEnemyAI.chaseTarget = combinedSoul.soulGO.transform;
+            blueSoul.chasedEnemyAI.chasingCombinedSoul = combinedSoul;
+            yellowSoul.chasedEnemyAI.chaseTarget = combinedSoul.soulGO.transform;
+            yellowSoul.chasedEnemyAI.chasingCombinedSoul = combinedSoul;
+        }
+
+        private bool CheckCombineSoul()
+        {
+            //如果红色、蓝色、黄色灵魂都至少有一个
+            return soulDIC[SoulColor.red].Count != 0 && soulDIC[SoulColor.blue].Count != 0 && soulDIC[SoulColor.yellow].Count != 0;
+        }
+
         [Button]
-        public void GrowBody()
+        public void GrowBody(Soul enemySoul)
         {
-            GameObject bodyPart = Instantiate(bodyPartPrefab, transform.FindChildByName("pivot" + currentBodypartIndex));
-            currentBodypartIndex++;
-            bodyParts.Add(bodyPart);
+            //if (currentBodypartIndex >= 9) return;
+            GameObject prefabToBeSpawned = null;
+            switch (enemySoul.soulColor)
+            {
+                case SoulColor.blue:
+                    prefabToBeSpawned = blueSoulPrefab;
+                    break;
+                case SoulColor.red:
+                    prefabToBeSpawned = redSoulPrefab;
+                    break;
+                case SoulColor.yellow:
+                    prefabToBeSpawned = yellowSoulPrefab;
+                    break;
+                case SoulColor.purple:
+                    prefabToBeSpawned = combinedPurpleSoulPrefab;
+                    break;
+            }
 
-            bodyPart.transform.localPosition = new Vector3(0, 0, 0);
-            bodyPart.transform.localScale = Vector3.one * 0.5f;
+            GameObject soulGO = Instantiate(prefabToBeSpawned, pivotTransArr[bodyParts.Count]);
+            enemySoul.soulGO = soulGO;
+
+            if (enemySoul.soulColor != SoulColor.purple)
+                enemySoul.chasedEnemyAI.chaseTarget = soulGO.transform;
+
+            bodyParts.Add(soulGO);
+            soulDIC[enemySoul.soulColor].Add(enemySoul);
+
+            soulGO.transform.localPosition = new Vector3(0, 0, 0);
+            soulGO.transform.localScale = Vector3.one * 0.5f;
+
+            if (CheckCombineSoul())
+                CombineSouls();
         }
 
-        public void ReduceBody()
+        public void ReduceBody(Soul enemySoul)
         {
-            Destroy(bodyParts[currentBodypartIndex]);
-            bodyParts.RemoveAt(currentBodypartIndex--);
-            HealthManager.Instance.DecreaseHealth();
+            GameObject soulToBeRemoved = enemySoul.soulGO;
+            soulDIC[enemySoul.soulColor].Remove(enemySoul);
+
+            Destroy(soulToBeRemoved);
+            enemySoul.soulGO = null;
+
+            bodyParts.Remove(soulToBeRemoved);
+            for (int i = 0; i < bodyParts.Count; i++)
+            {
+                bodyParts[i].transform.parent = pivotTransArr[i];
+            }
         }
 
-        public void ReduceBodyNotHealth()
+        public void SplitCombinedSoul(CombinedSoul combinedSoul)
         {
-            
+            Soul redSoul = combinedSoul.redSoul;
+            Soul blueSoul = combinedSoul.blueSoul;
+            Soul yellowSoul = combinedSoul.yellowSoul;
+
+            ReduceBody(combinedSoul);
+
+            GameObject redSoulGO = explosionController.Explode(redSoulPrefab);
+            GameObject blueSoulGO = explosionController.Explode(blueSoulPrefab);
+            GameObject yellowSoulGO = explosionController.Explode(yellowSoulPrefab);
+
+            redSoul.chasedEnemyAI.chaseTarget = redSoulGO.transform;
+            redSoul.chasedEnemyAI.chasingCombinedSoul = null;
+            blueSoul.chasedEnemyAI.chaseTarget = blueSoulGO.transform;
+            blueSoul.chasedEnemyAI.chasingCombinedSoul = null;
+            yellowSoul.chasedEnemyAI.chaseTarget = yellowSoulGO.transform;
+            yellowSoul.chasedEnemyAI.chasingCombinedSoul = null;
+
+            SoulCollectible redSoulCollectible = redSoulGO.AddComponent<SoulCollectible>();
+            redSoulCollectible.soul = redSoul;
+            SoulCollectible blueSoulCollectible = blueSoulGO.AddComponent<SoulCollectible>();
+            blueSoulCollectible.soul = blueSoul;
+            SoulCollectible yellowSoulCollectible = yellowSoulGO.AddComponent<SoulCollectible>();
+            yellowSoulCollectible.soul = yellowSoul;
+        }
+        
+
+
+    }
+
+    public class Soul
+    {
+        public SoulColor soulColor;
+        public EnemyAI chasedEnemyAI { get; private set; }
+        public GameObject soulGO;
+
+        public Soul() { }
+
+        public Soul(SoulColor soulColor, EnemyAI chasedEnemy)
+        {
+            this.soulColor = soulColor;
+            this.chasedEnemyAI = chasedEnemy;
         }
 
-       
+        public Soul(SoulColor soulColor, EnemyAI chasedEnemy, GameObject soulGO)
+        {
+            this.soulColor = soulColor;
+            this.chasedEnemyAI = chasedEnemy;
+            this.soulGO = soulGO;
+        }
+    }
+
+    public class CombinedSoul : Soul
+    {
+        public Soul redSoul { get; private set; }
+        public Soul blueSoul { get; private set; }
+        public Soul yellowSoul { get; private set; }
+
+        public CombinedSoul(Soul redSoul, Soul blueSoul, Soul yellowSoul)
+        {
+            this.redSoul = redSoul;
+            this.blueSoul = blueSoul;
+            this.yellowSoul = yellowSoul;
+
+            this.soulColor = SoulColor.purple;
+        }
+
     }
 
 }
