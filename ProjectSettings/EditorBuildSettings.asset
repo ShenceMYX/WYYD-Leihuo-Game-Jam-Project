@@ -9,8 +9,14 @@ EditorBuildSettings:
     path: Assets/Scenes/MYX Level Design/Level01.unity
     guid: 43fb9ae18b86f411e9e37037c78d9c6a
   - enabled: 1
+    path: Assets/Scenes/MYX Level Design/Level02.unity
+    guid: 9ce555f367ad645899be4a4cb1ddc531
+  - enabled: 1
     path: Assets/Scenes/MYX Level Design/Level03.unity
     guid: 12376e835caa24d769489a92646b2cd7
+  - enabled: 1
+    path: Assets/Scenes/MYX Level Design/Level04.unity
+    guid: f25a2af71c5384442b379dc270be9ae9
   - enabled: 1
     path: Assets/Scenes/MYX Level Design/SampleScene.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab

@@ -190,7 +190,22 @@ namespace ns
             Destroy(soulToBeRemoved);
             enemySoul.soulGO = null;
 
+            string log = "remove before: ";
+            foreach (var item in bodyParts)
+            {
+                log += item;
+                log += " , ";
+            }
+            Debug.Log(log);
             bodyParts.Remove(soulToBeRemoved);
+            string log2 = "remove before: ";
+            foreach (var item in bodyParts)
+            {
+                log2 += item;
+                log2 += " , ";
+            }
+            Debug.Log(log2);
+
             for (int i = 0; i < bodyParts.Count; i++)
             {
                 bodyParts[i].transform.parent = pivotTransArr[i];
