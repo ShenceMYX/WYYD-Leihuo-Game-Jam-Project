@@ -956,7 +956,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e11d89ad3f3ee4bcab19f6798926ddf4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  jumpRequiredEnergy: 0
+  jumpRequiredEnergy: 20
   playerPhysicMat: {fileID: 13400000, guid: aef1688c6d9ad4fac9606a1e2fb08cfb, type: 2}
   blueSoulPrefab: {fileID: 4218998995997185348, guid: 5f62c623d6cf94b02aa4ac29c057c99c, type: 3}
   redSoulPrefab: {fileID: 175124160507272722, guid: 6f0b877171504413cb95e92c1668d673, type: 3}
@@ -976,7 +976,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24cfac75149cd415a980891b8298c37e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 4
+  moveSpeed: 7
   jumpSpeed: 9.5
   turnSpeed: 720
   moveUpGravity: {x: 0, y: -18, z: 0}

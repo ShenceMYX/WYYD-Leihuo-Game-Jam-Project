@@ -36,4 +36,5 @@ Material:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _GradientColor: {r: 1, g: 1, b: 1, a: 1}
     - _Tint: {r: 0, g: 0.4392157, b: 1, a: 1}
+    - _XRayColor: {r: 0.4669811, g: 0.7534028, b: 1, a: 0.5019608}
   m_BuildTextureStacks: []

@@ -43,17 +43,18 @@ namespace ns
         {
             currentEnergy += value;
             currentEnergy = Mathf.Clamp(currentEnergy, 0, maxEnergy);
-            int energyBarIndex = Mathf.FloorToInt((currentEnergy - 0.001f) / everyBarMaxEnergy);
+            int energyBarIndex = Mathf.FloorToInt(currentEnergy / (everyBarMaxEnergy + 0.001f));
+            Debug.Log(energyBarIndex);
             energyBars[energyBarIndex].SetEnergy((currentEnergy - everyBarMaxEnergy * energyBarIndex) / everyBarMaxEnergy);
 
-            if(currentEnergy >= everyBarMaxEnergy)
-            {
-                PlayerInputController.Instance.SetSpeedToAcceleratedSpeed();
-            }
-            else
-            {
-                PlayerInputController.Instance.ResetSpeed();
-            }
+            //if(currentEnergy >= everyBarMaxEnergy)
+            //{
+            //    PlayerInputController.Instance.SetSpeedToAcceleratedSpeed();
+            //}
+            //else
+            //{
+            //    PlayerInputController.Instance.ResetSpeed();
+            //}
         }
 
     }

@@ -1,4 +1,4 @@
-Shader "yx/MyPBRTest"
+Shader "yx/GradientColor"
 {
     Properties
     {
@@ -10,10 +10,12 @@ Shader "yx/MyPBRTest"
         _GradientColor ("Gradient Color", Color) = (0,0,0,1)
         _GradientIntensity ("Gradient Intensity", Range(0,1)) = 0.5
         _GradientIntensity2 ("Gradient Intensity2", Range(0,1)) = 0.5
+
+        _XRayColor ("X-Ray Color", Color) = (1,1,1,1)
     }
     SubShader
     {
-
+        UsePass "yx/XRay/XRay"
         Pass
         {
             Tags {"LightMode" = "ForwardBase" }

@@ -21,7 +21,7 @@ namespace ns
 
         private void Start()
         {
-			goalText.text = currentSoul + " / " + goal;
+			goalText.text = currentSoul + "/" + goal;
         }
 
 		public bool CheckWinCondition()
@@ -32,7 +32,7 @@ namespace ns
 		public void UpdateCurrentSoul(int value)
         {
 			currentSoul += value;
-			goalText.text = currentSoul + " / " + goal;
+			goalText.text = currentSoul + "/" + goal;
             if (CheckWinCondition())
             {
 				DoorController.Instance.RaiseUp();
