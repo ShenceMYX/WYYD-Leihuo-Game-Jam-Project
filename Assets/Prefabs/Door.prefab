@@ -157,4 +157,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetY: 2.49
-  moveUpDuration: 3
+  moveUpDuration: 2

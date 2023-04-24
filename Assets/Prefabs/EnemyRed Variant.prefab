@@ -19,6 +19,10 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: -9.75
       objectReference: {fileID: 0}
+    - target: {fileID: 121206715869359060, guid: 2a5ec0c99b9c443bc9590f8080383980, type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 2100000, guid: 374981dd542ef4caaab0576cb31a62d0, type: 2}
     - target: {fileID: 606786215004897950, guid: 2a5ec0c99b9c443bc9590f8080383980, type: 3}
       propertyPath: enemyColor
       value: 0
@@ -27,6 +31,10 @@ PrefabInstance:
       propertyPath: enemySoulColor
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2567164656084339391, guid: 2a5ec0c99b9c443bc9590f8080383980, type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 2100000, guid: 374981dd542ef4caaab0576cb31a62d0, type: 2}
     - target: {fileID: 2905800591481302539, guid: 2a5ec0c99b9c443bc9590f8080383980, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -69,6 +77,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2905800591481302539, guid: 2a5ec0c99b9c443bc9590f8080383980, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4194189332866106907, guid: 2a5ec0c99b9c443bc9590f8080383980, type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6628926819260576486, guid: 2a5ec0c99b9c443bc9590f8080383980, type: 3}

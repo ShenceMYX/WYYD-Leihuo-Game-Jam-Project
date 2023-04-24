@@ -38,6 +38,8 @@ namespace ns
 
         private ExplosionController explosionController;
 
+        public bool canNotMove { get; set; } = false;
+
         private void Start()
         {
             motor = GetComponent<PlayerMotor>();
@@ -66,12 +68,15 @@ namespace ns
 
             Vector3 inputVec = new Vector3(xInput, 0, yInput).normalized;
 
+            if (canNotMove) return;
+
             motor.ResetVelocityVec();
 
             //motor.MoveForward(yInput);
             //motor.Turn(xInput);
 
             isMoving = inputVec.magnitude != 0;
+
 
             if (inputVec.magnitude != 0)
             {

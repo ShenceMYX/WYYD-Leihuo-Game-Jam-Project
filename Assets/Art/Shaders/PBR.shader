@@ -171,4 +171,5 @@ Shader "yx/PBR"
             ENDCG
         }
     }
+    FallBack "Diffuse"
 }

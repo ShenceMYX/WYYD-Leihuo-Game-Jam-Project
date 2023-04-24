@@ -121,6 +121,7 @@ namespace ns
 
                     OnStealValueChanged?.Invoke(stealRatio);
                     meshRenderer.material.SetFloat("_GradientIntensity", 0.5f + 0.5f * stealRatio);
+                    PlayerInputController.Instance.canNotMove = true;
                 }
                 else
                 {
@@ -133,6 +134,7 @@ namespace ns
                         currentStealValue = 0;
                         OnStealValueFull?.Invoke();
                     }
+                    PlayerInputController.Instance.canNotMove = false;
                 }
             }
             else
@@ -142,6 +144,7 @@ namespace ns
                 {
                     currentState = EnemyState.patrol;
                 }
+                PlayerInputController.Instance.canNotMove = false;
             }
         }
 

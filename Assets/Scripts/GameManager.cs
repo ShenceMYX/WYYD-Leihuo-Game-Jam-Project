@@ -33,10 +33,6 @@ namespace ns
         {
 			currentSoul += value;
 			goalText.text = currentSoul + "/" + goal;
-            if (CheckWinCondition())
-            {
-				DoorController.Instance.RaiseUp();
-			}
 		}
 
 		public void GameWin()
