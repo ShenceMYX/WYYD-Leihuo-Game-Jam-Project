@@ -28,7 +28,7 @@ namespace ns
         }
 
 
-		private EnemyMotor motor;
+		protected EnemyMotor motor;
 
         [SerializeField] private SoulColor enemySoulColor;
 
@@ -151,10 +151,16 @@ namespace ns
         private void Chase()
         {
             if (chaseTarget != null)
-                motor.MoveToTarget(chaseTarget.position);
+                ChaseAI(chaseTarget);
             else
                 currentState = EnemyState.patrol;
         }
+
+        protected virtual void ChaseAI(Transform chaseTarget)
+        {
+            motor.MoveToTarget(chaseTarget.position);
+        }
+        
 
         private void Patrol()
         {

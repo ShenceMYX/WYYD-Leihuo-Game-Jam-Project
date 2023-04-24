@@ -4,6 +4,7 @@ using Common;
 using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
+using Sirenix.OdinInspector;
 
 namespace ns
 {
@@ -23,6 +24,12 @@ namespace ns
         {
 			goalText.text = currentSoul + "/" + goal;
         }
+
+		[Button]
+		public void ChangeGoalTextToCurrentSetup()
+        {
+			goalText.text = currentSoul + "/" + goal;
+		}
 
 		public bool CheckWinCondition()
         {

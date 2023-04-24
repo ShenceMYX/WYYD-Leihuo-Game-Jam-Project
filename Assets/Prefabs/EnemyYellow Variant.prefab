@@ -75,6 +75,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5150209330992033306, guid: 2a5ec0c99b9c443bc9590f8080383980, type: 3}
+      propertyPath: moveSpeed
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 6628926819260576486, guid: 2a5ec0c99b9c443bc9590f8080383980, type: 3}
       propertyPath: m_Name
       value: EnemyYellow Variant
@@ -83,5 +87,48 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: dc9a7dcdc8b6d4071832d58c8aa08c96, type: 2}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 606786215004897950, guid: 2a5ec0c99b9c443bc9590f8080383980, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 2a5ec0c99b9c443bc9590f8080383980, type: 3}
+--- !u!4 &6339118308677880150 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1842453554, guid: 2a5ec0c99b9c443bc9590f8080383980, type: 3}
+  m_PrefabInstance: {fileID: 6339118310461412708}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &6339118310589361055 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 534806267, guid: 2a5ec0c99b9c443bc9590f8080383980, type: 3}
+  m_PrefabInstance: {fileID: 6339118310461412708}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &6967610277246073547 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3983713309448138671, guid: 2a5ec0c99b9c443bc9590f8080383980, type: 3}
+  m_PrefabInstance: {fileID: 6339118310461412708}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &7182518821104036887
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6967610277246073547}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8762e0d041cc43b59d8aec62c314c68, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enemySoulColor: 1
+  currentState: 0
+  wayPoints:
+  - {fileID: 6339118310589361055}
+  - {fileID: 6339118308677880150}
+  targetWayPointIndex: 0
+  patrolWaitTime: 1
+  chaseTarget: {fileID: 0}
+  paralysisRecoverTime: 2
+  soulStolenRange: 4
+  playerLayer:
+    serializedVersion: 2
+    m_Bits: 8
+  chaseSoulMinDistance: 4
+  chaseWaitTime: 2
